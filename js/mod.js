@@ -1,6 +1,6 @@
 ﻿let modInfo = {
-	name: "The Points Tree",
-	id: "The Points Tree",
+	name: "Tree",
+	id: "nmsl",
 	author: "陌尘",
 	pointsName: "点数",
 	discordName: "",
@@ -12,14 +12,16 @@
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.1",
+	num: "0.0",
 	name: "",
 }
 
-let changelog = `<h1更新日志:</h1><br>
+let changelog = `<h1>更新日志:</h1><br>
 	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+		
+		
+		
+		`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -33,28 +35,28 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-		return true
+	return true
 }
 
 // Calculate points/sec!
 function getPointGen() {
 	if(!canGenPoints()) return new ExpantaNum(0)
-	
 	let eff = new ExpantaNum(1)
-		if(hasUpgrade("s",11)) eff = eff.mul(player.s.points.pow(0.5).max(1))
-	var spsec = player.points.pow(0.25).sub(1.5)
-	if(hasUpgrade("s",12)) spsec = spsec.mul(player.points.pow(0.125).max(1))
-	if(hasUpgrade("s",21)) eff = eff.pow(0.5)
-	if(hasUpgrade("s",21)) spsec = spsec.pow(1.2)
-		
-		if(hasUpgrade("s",13)) eff = eff.mul(spsec.max(0))
+	
+	if(hasUpgrade("q",11)) eff = eff.mul( player.q.points.pow(0.15) )
+	if(hasAchievement("T",14)) eff = eff.mul(1.5)
+	if(hasAchievement("T",24)) eff = eff.mul(1.5)
+	if(hasAchievement("T",34)) eff = eff.mul(1.25)
+	
+	var p = player.q.points.floor()
+		if(p.div(3).floor().eq(p.div(3))) eff = eff.pow(1.1)
+		if(!p.div(3).floor().eq(p.div(3))) eff = eff.pow(1)
+	if(hasUpgrade("q",14)) eff = eff.pow(1.05)
+	
+if(player.q.y.gt(0)&&player.q.z.eq(0)) eff = eff.mul(player.q.y.pow(0.01).max(1))
+if(player.q.y.gt(0)&&player.q.z.neq(0)) eff = eff.mul(player.q.y.pow(0.01).mul(player.q.z.pow(0.075)))
 			
-	if(player.s.scl11.gt(0)) eff = eff.mul(new ExpantaNum(1.55).pow(player.s.scl11))
-	if(player.s.scl12.gt(0)) eff = eff.mul(new ExpantaNum(1).add(player.s.scl12.mul(0.02)).max(1))
-	eff = eff.mul(player.o.points.add(1).pow(2.5).max(1))
-
-
-softcap(eff,new ExpantaNum(1e308),0.001)
+	eff = eff.max(1)
 	return eff
 }
 
