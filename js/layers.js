@@ -41,7 +41,6 @@ update(diff) {
 /////////////////////////////////////////////////////////////////
 	var pointscap = new ExpantaNum(10)
 	if(hasUpgrade("q",41)) pointscap = pointscap.add(5)
-	if(player.n.points.gt(0)) pointscap = pointscap.add( new ExpantaNum(3).pow(player.n.points) )
 	if(hasUpgrade("q",13)) pointscap = pointscap.mul( player.q.points.pow(0.1) )
 		
 if(hasUpgrade("q",21)){
@@ -50,13 +49,15 @@ var p = player.q.points.floor()
 			if(p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var pointscap = pointscap.add(20)
 			if(p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var pointscap = pointscap.add(20)
 			if(!p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var pointscap = pointscap.add(0)
-			if(!p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var pointscap = pointscap.add(5)
+			if(!p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15) && !hasUpgrade("q",25)) var pointscap = pointscap.add(5)
+		if(hasUpgrade("q",25) && !p.div(2).floor().eq(p.div(2)) ) pointscap = pointscap.add( new ExpantaNum(20) )
 						}
 	if(hasUpgrade("q",32)){
 			if(p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var pointscap = pointscap.add(new ExpantaNum(20).pow(1.1))
 			if(p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var pointscap = pointscap.add(new ExpantaNum(20).pow(1.1))
 			if(!p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var pointscap = pointscap.add(new ExpantaNum(0).pow(1.1))
-			if(!p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var pointscap = pointscap.add(new ExpantaNum(5).pow(1.1))
+			if(!p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15) && !hasUpgrade("q",25)) var pointscap = pointscap.add(new ExpantaNum(5).pow(1.1))
+		if(hasUpgrade("q",25) && !p.div(2).floor().eq(p.div(2)) ) pointscap = pointscap.add( new ExpantaNum(20).pow(1.1) )
 						}
 }
 if(hasUpgrade("q",22)){
@@ -64,17 +65,18 @@ var p = player.q.points.floor()
 	if(!hasUpgrade("q",32)){
 		if(p.div(3).floor().eq(p.div(3))) var pointscap = pointscap.add(30)
 		if(!p.div(3).floor().eq(p.div(3))) var pointscap = pointscap.add(0)
+	if(hasUpgrade("q",25) &&!p.div(3).floor().eq(p.div(3)) ) pointscap = pointscap.add( new ExpantaNum(30) )
 	}
 	if(hasUpgrade("q",32)){
 		if(p.div(3).floor().eq(p.div(3))) var pointscap = pointscap.add(new ExpantaNum(30).pow(1.1))
 		if(!p.div(3).floor().eq(p.div(3))) var pointscap = pointscap.add(new ExpantaNum(0).pow(1.1))
+	if(hasUpgrade("q",25) &&!p.div(3).floor().eq(p.div(3)) ) pointscap = pointscap.add( new ExpantaNum(30).pow(1.1) )
 	}
 }
 	if(hasUpgrade("q",31)) {
 		if(hasUpgrade("q",33)) pointscap = pointscap.max( new ExpantaNum(50).pow(1.075) )
 		if(!hasUpgrade("q",33))pointscap = pointscap.max(50)
 	}
-if(hasAchievement("T",42)) pointscap = pointscap.max(200)
 if(player.q.x.gt(0)&&player.q.z.eq(0)) pointscap = pointscap.add(player.q.x.pow(0.25).max(1))
 if(player.q.x.gt(0)&&player.q.z.neq(0)) pointscap = pointscap.add(player.q.x.pow(0.25).mul(player.q.z.pow(0.3).max(1)))
 if(hasUpgrade("q",42)) pointscap = pointscap.sub(5)
@@ -178,8 +180,8 @@ achievements: {
 			},
 		41: {
             name: "<h3>微子?",
-            done() {return player.n.points.gte(3)},
-            tooltip: "拥有三点以上中微子<br>奖励：不管何时每秒获得5%可重置夸克",
+            done() {return player.n.points.gte(2)},
+            tooltip: "拥有一个以上中微子<br>奖励：你的中微子增强你的夸克上限",
             unlocked() { return hasAchievement("T",35) },
 			},
 		42: {
@@ -232,18 +234,20 @@ addLayer("q", {
 			if(hasUpgrade("q",12)&&!hasUpgrade("q",43)) mult = mult.mul( player.q.points.pow(0.2) )
 			if(hasUpgrade("q",12)&& hasUpgrade("q",43)) mult = mult.mul( player.q.points.pow(0.2).mul(2.5) )
 			if(hasAchievement("T",22)) mult = mult.mul(1.5)
+			if(hasUpgrade("q",15)) mult = mult.mul(1.25)
+			if(hasUpgrade("q",35)) mult = mult.mul(1.15)
 				mult = mult.max(1)
         return mult
     },
     gainExp() {
 		var exp = new ExpantaNum(1)
 			if(hasUpgrade("q",42)) exp = exp.add(0.05)
+			if(hasUpgrade("q",45)) exp = exp.pow(1.25)
 		exp = exp.max(1)
         return exp
     },
 	passiveGeneration(){
 		var a = new ExpantaNum(0)
-			if(hasAchievement("T",41)) a = a.add(0.05)
 		return a   
          },
     row: 1, 
@@ -263,10 +267,6 @@ player.q.x = player.q.x.min(1000)
 player.q.y = player.q.y.min(1000)
 player.q.z = player.q.z.min(1000)
 
-if(hasUpgrade("q",15) && !hasUpgrade("q",25) && player.q.points.gte(50000)) player.q.points = player.q.points.sub( new ExpantaNum(10).mul(diff) )
-if(hasUpgrade("q",25) && !hasUpgrade("q",35) && player.q.points.lte(50000)) player.q.points = player.q.points.add( new ExpantaNum(20).mul(diff) )
-if(hasUpgrade("q",35) && !hasUpgrade("q",45) && player.q.points.gte(50000)) player.q.points = player.q.points.sub( new ExpantaNum(30).mul(diff) )
-if(hasUpgrade("q",45) && player.q.points.lte(50000)) player.q.points = player.q.points.add( new ExpantaNum(40).mul(diff) )
    },
 	//layerShown(){return player.points.gte(1)|| player.P1.points > 0},
 	
@@ -279,6 +279,7 @@ if(hasUpgrade("q",45) && player.q.points.lte(50000)) player.q.points = player.q.
 				effect() {
 					let eff = player.q.points
 						eff = eff.pow(0.15)
+						eff = eff.max(1)
 					return eff
 				},
 				effectDisplay() { return format(this.effect())+"x" },
@@ -322,12 +323,14 @@ if(hasUpgrade("q",45) && player.q.points.lte(50000)) player.q.points = player.q.
 							if(p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var eff = new ExpantaNum(20)
 							if(!p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var eff = new ExpantaNum(0)
 							if(!p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var eff = new ExpantaNum(5)
+							if(hasUpgrade("q",25)) eff = new ExpantaNum(20)
 						}
 						if(hasUpgrade("q",32)){
 							if(p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var eff = new ExpantaNum(20).pow(1.1)
 							if(p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var eff = new ExpantaNum(20).pow(1.1)
 							if(!p.div(2).floor().eq(p.div(2)) && !hasAchievement("T",15)) var eff = new ExpantaNum(0).pow(1.1)
 							if(!p.div(2).floor().eq(p.div(2)) && hasAchievement("T",15)) var eff = new ExpantaNum(5).pow(1.1)
+							if(hasUpgrade("q",25)) eff = new ExpantaNum(20).pow(1.1)
 						}
 					return eff
 				},
@@ -343,10 +346,12 @@ if(hasUpgrade("q",45) && player.q.points.lte(50000)) player.q.points = player.q.
 						if(!hasUpgrade("q",32)){
 							if(p.div(3).floor().eq(p.div(3))) var eff = new ExpantaNum(30)
 							if(!p.div(3).floor().eq(p.div(3))) var eff = new ExpantaNum(0)
+						if(hasUpgrade("q",25)) eff = new ExpantaNum(30)
 						}
 						if(hasUpgrade("q",32)){
 							if(p.div(3).floor().eq(p.div(3))) var eff = new ExpantaNum(30).pow(1.1)
 							if(!p.div(3).floor().eq(p.div(3))) var eff = new ExpantaNum(0).pow(1.1)
+						if(hasUpgrade("q",25)) eff = new ExpantaNum(30).pow(1.1)
 						}
 					return eff
 				},
@@ -429,36 +434,33 @@ if(hasUpgrade("q",45) && player.q.points.lte(50000)) player.q.points = player.q.
 				cost:new ExpantaNum(7500),
 				},
 			15: {
-				title:"上夸克",
-				description:"因为夸克不平衡,你每秒失去10夸克<br>有下夸克时停止",
+				title:"受热膨胀",
+				description:"夸克获取增加25%",
 				unlocked() { return (hasAchievement("T",32)) || player.T.jieduan.gte(1)},
 				cost(){return new ExpantaNum(10000)},
-				canAfford(){return hasUpgrade("q",44) && player.q.points.gte( this.cost() ) },
-				pay(){player.q.points = player.q.points.sub( this.cost() )},
 				},
 			25: {
-				title:"下夸克",
-				description:"因为夸克平衡了,你每秒得到20夸克<br>有顶夸克时停止",
+				title:"恒定不变",
+				description:"‘夸克连锁’和‘夸克分离’效果一直拥有(‘平行线相交’不一定)",
 				unlocked() { return (hasAchievement("T",32)) || player.T.jieduan.gte(1)},
 				cost(){return new ExpantaNum(20000)},
-				canAfford(){return hasUpgrade("q",15) && player.q.points.gte( this.cost() ) },
-				pay(){player.q.points = player.q.points.sub( this.cost() )},
 				},
 			35: {
-				title:"顶夸克",
-				description:"因为夸克不平衡,你每秒失去30夸克<br>有底夸克时停止",
+				title:"遇冷收缩",
+				description:"夸克获取增加15%",
 				unlocked() { return (hasAchievement("T",32)) || player.T.jieduan.gte(1)},
 				cost(){return new ExpantaNum(30000)},
-				canAfford(){return hasUpgrade("q",25) && player.q.points.gte( this.cost() ) },
-				pay(){player.q.points = player.q.points.sub( this.cost() )},
 				},
 			45: {
-				title:"底夸克",
-				description:"因为夸克平衡了,你每秒得到40夸克<br>此列升级上限为50000夸克<br>开启一个新的节点",
+				title:"理想情况",
+				description:"夸克获取^1.25<br>解锁新的节点",
 				unlocked() { return (hasAchievement("T",32)) || player.T.jieduan.gte(1)},
+				canAfford() {return player.q.points.gte( this.cost() )},
+				pay(){
+					player.q.points = player.q.points.sub( this.cost() )
+					if(player.T.jieduan.eq(0))player.T.jieduan = player.T.jieduan.add(1)
+				},
 				cost(){return new ExpantaNum(40000)},
-				canAfford(){return hasUpgrade("q",35) && player.q.points.gte( this.cost() ) },
-				pay(){player.q.points = player.q.points.sub( this.cost() ) , player.T.jieduan = player.T.jieduan.add(1)},
 				},
 	},
 
@@ -487,13 +489,13 @@ addLayer("n", {
 		points: new ExpantaNum(0),
     }},
     color: "#a0ffff",
-	requires: new ExpantaNum(10000),
+	requires: new ExpantaNum(50000),
 	branches: ["q"],
     resource: "中微子",
 	baseResource: "夸克",
 	baseAmount() {return player.q.points}, 
-    type: "static", 
-	exponent: 1.5,
+    type: "normal", 
+	exponent: 0.5,
     gainMult() { 
         mult = new ExpantaNum(1)
 		
@@ -518,15 +520,24 @@ doReset(resettingLayer) {
 		}
 	},
 update(diff) {
+	var quarkcap = new ExpantaNum(50000)
+	
+	
+	
+	
+	
+	
+	
+	player.q.points = player.q.points.min( quarkcap )
    },
-	//layerShown(){return player.points.gte(1)|| player.P1.points > 0},
+layerShown(){return hasUpgrade("q",45)||player.T.jieduan.gte(1)},
 	
 
 tabFormat: [
 			"main-display",//你有xxx该重置点
 			[
 			"display-text",function(){
-				return "你拥有 " + player.n.points + " 中微子" + "这使你的点数硬上限增加 " + new ExpantaNum(3).pow(player.n.points) + " 最先计算"
+				//return "你拥有 " + player.n.points + " 中微子" + "这使你的点数硬上限增加 " + new ExpantaNum(3).pow(player.n.points) + " 最先计算"
 									}
 			],"blank",
             "prestige-button",//获取重置点按钮

@@ -12,7 +12,7 @@
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
+	num:  "0.0.1",
 	name: "",
 }
 
@@ -66,6 +66,8 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	function(){return"当前版本endgame 为/约 1 中微子"},
+	function(){return"作者陌尘 QQ3168704134 9.1已开学"},
 ]
 
 // Determines when the game "ends"
